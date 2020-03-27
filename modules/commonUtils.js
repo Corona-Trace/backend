@@ -1,6 +1,8 @@
 const geocoding = require('reverse-geocoding-google');
 const admin = require('firebase-admin');
 
+const { saveNotification} = require('../modules/notification/notification.controller');
+
 const serviceAccount = {
     "type": process.env['TYPE'],
     "project_id": process.env['PROJECT_ID'],
@@ -32,30 +34,58 @@ async function createPayload(infectedUser, userLocationHistoryObj){
     else if(timeDiff < 60)
         visitTime = `${timeDiff} minutes`;
     else if (timeDiff < 1440)// minutes in a day
-        visitTime = `${parseInt(visitTime/60)} ${parseInt(visitTime/60) == 1 ? 'hour': 'hours'}`;
+        visitTime = `${parseInt(timeDiff/60)} ${parseInt(timeDiff/60) == 1 ? 'hour': 'hours'}`;
     else
-        visitTime = `${parseInt(visitTime/1440)} ${parseInt(visitTime/1440) == 1 ? 'day': 'days'}`;
+        visitTime = `${parseInt(timeDiff/1440)} ${parseInt(timeDiff/1440) == 1 ? 'day': 'days'}`;
 
     const time  = infectedTs.getHours() > 12 ? `${infectedTs.getHours() - 12}PM` : `${infectedTs.getHours()}AM`
     return fetchAddress(lat, lng)
-    .then(geocodingResponse => {
-        let address = `${lat},${lng}`;
-        if(geocodingResponse.results && geocodingResponse.results.length > 0 && geocodingResponse.results[0].formatted_address){
-            address = geocodingResponse.results[0].formatted_address;
-        }
-        return `An Anonymous person tested positive for Coronavirus visited ${address} at ${time} on ${infectedTs.getMonth() + 1}/${infectedTs.getDate()}, ${visitTime} prior to when you were there.`;
-    })
-    .catch(reason => {
-        throw reason;
-    });
+        .then(geocodingResponse => {
+            let address = `${lat},${lng}`;
+            if(geocodingResponse.results && geocodingResponse.results.length > 0 && geocodingResponse.results[0].formatted_address){
+                address = geocodingResponse.results[0].formatted_address;
+            }
+            const payload = {
+                notification: {
+                    click_action: "FLUTTER_NOTIFICATION_CLICK",
+                    title: `Alert: You crossed paths with someone confirmed Positive.`,
+                    body: `An Anonymous person tested positive for Coronavirus visited ${address} at ${time} on ${infectedTs.getMonth() + 1}/${infectedTs.getDate()}, ${visitTime} prior to when you were there.`,
+                    badge: '1',
+                    sound: 'default'
+                },
+                data: { 
+                    timestamp: userLocationHistoryObj.timestamp, 
+                    address: address, 
+                    lat, 
+                    lng, 
+                    userId: userLocationHistoryObj.userId
+                },
+            };
+            return payload;
+        })
+        .catch(reason => {
+            throw reason;
+        });
 }
 
 //Sends notification to user mobile
 function sendPush({ token, payload}) {
-    console.log("SP:",payload);
-    return admin
-        .messaging()
-        .sendToDevice(token, payload);
+    saveNotification(payload.data).then(notification => {
+        payload.data = { 
+            ...payload.data,
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+            timestamp: JSON.stringify(payload.data.timestamp),
+            lat:`${payload.data.lat}`,
+            lng:`${payload.data.lng}`,
+            notificationId: JSON.stringify(notification._id)
+        };
+        console.log("SP:",payload);
+        return admin
+            .messaging()
+            .sendToDevice(token, payload);
+    }).catch(err => {
+        console.log(`Error in saving notification: ${err}`);
+    });
 }
 
 //Fetch address based on lat, lng 

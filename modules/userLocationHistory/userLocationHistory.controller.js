@@ -26,15 +26,7 @@ function checkUserLocation(userLocationHistoryObj, userObj) {
         if(infectedUsers.length > 0){
             const infectedUser = infectedUsers[0];
             try{
-                const message = await createPayload(infectedUser, userLocationHistoryObj);
-                const payload = {
-                    notification: {
-                        title: `Alert: You crossed paths with someone confirmed Positive.`,
-                        body: message,
-                        badge: '1',
-                        sound: 'default'
-                    }
-                };
+                const payload = await createPayload(infectedUser, userLocationHistoryObj);
                 const pushObj = {
                     payload,
                     token: userObj.token

@@ -72,15 +72,7 @@ function checkUserHistory(userId) {
                         const user = usersObj[userKey];
                         console.log("CheckUserHistory", user);
                         try {
-                            const message = await createPayload(infectedUserHistoryObj, user);
-                            const payload = {
-                                notification: {
-                                    title: `Alert: You crossed paths with someone confirmed Positive.`,
-                                    body: message,
-                                    badge: '1',
-                                    sound: 'default'
-                                }
-                            };
+                            const payload = await createPayload(infectedUserHistoryObj, user);
                             const pushObj = {
                                 payload,
                                 token: user.contactUser.token
