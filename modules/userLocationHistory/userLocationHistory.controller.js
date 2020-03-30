@@ -3,13 +3,59 @@ const UserLocationHistory = require('./userLocationHistory.model');
 
 const { sendPush, createPayload } = require('../commonUtils');
 
+function transformLocation(backGroundLocation){
+    const {
+        uuid,
+        event,
+        battery,
+        geofence,
+        odometer,
+        activity,
+        timestamp,
+        is_moving,  
+        is_heartbeat,
+        extras: { userId },
+        coords: {
+            latitude: lat,
+            longitude: lng,
+            speed,
+            heading,
+            altitude,
+            accuracy,
+        }
+    } = backGroundLocation;
+
+    return {
+        lat,
+        lng,
+        uuid,
+        userId,
+        event,
+        speed,
+        battery,
+        heading,
+        geofence,
+        altitude,
+        odometer,
+        activity,
+        accuracy,
+        timestamp,
+        is_moving,  
+        is_heartbeat,
+        location: {
+            type: "Point",
+            coordinates: [lng, lat]
+        },
+    };
+}
+
 //Checks if an infected person visited the current user location previously
 function checkUserLocation(userLocationHistoryObj, userObj) {
     console.log("ULH:",userLocationHistoryObj.userId);
     const { lat, lng } = userLocationHistoryObj;
     UserLocationHistory.find({
         $and: [
-            { location: { $near: { $geometry: { type: "Point", coordinates: [lng, lat] }, $maxDistance: 3 } } },
+            { location: { $near: { $geometry: { type: "Point", coordinates: [lng, lat] }, $maxDistance: 10 } } },
             { timestamp: { $gte: new Date( userLocationHistoryObj.timestamp - 7 * 24 * 60 * 60 * 1000) } },
             // { timestamp: { $lte: new Date(userLocationHistoryObj.timestamp) } },
             { severity: { $eq: 1 } }
@@ -40,8 +86,8 @@ function checkUserLocation(userLocationHistoryObj, userObj) {
     });
 }
 
-function saveUserLocation(req, res) {
-    const { userId } = req.body;
+function saveUserLocation(tempObj) {
+    const { userId } = tempObj;
     User.findOne({ userId }, function (err, userObj) {
         if (err) {
             return res.send({ message: err });
@@ -49,7 +95,7 @@ function saveUserLocation(req, res) {
         if (!userObj) {
             return res.send({ message: 'user not found' });
         }
-        const userLocationHistory = new UserLocationHistory(req.body);
+        const userLocationHistory = new UserLocationHistory(tempObj);
         userLocationHistory.severity = userObj.severity;
         userLocationHistory.save((err, userLocationHistoryObj) => {
             if (err)
@@ -61,6 +107,33 @@ function saveUserLocation(req, res) {
     })
 }
 
+function saveBackgroundUserLocation(req, res) {
+    const { body } = req;
+    if (Array.isArray(body.location)) {
+        console.log('saveBackgroundUserLocation', body);
+        //WIP
+    } else {
+        const obj = transformLocation(body.location);
+        User.findOne({ userId: obj.userId }, function (err, userObj) {
+            if (err) {
+                return res.send({ message: err });
+            }
+            if (!userObj) {
+                return res.send({ message: 'user not found' });
+            }
+            obj.severity = userObj.severity;
+            const userLocationHistory = new UserLocationHistory(obj);
+            userLocationHistory.save((err, userLocationHistoryObj) => {
+                if (err)
+                    return res.send({ message: err });
+                if (userLocationHistoryObj.severity === 0)
+                    checkUserLocation(userLocationHistoryObj, userObj);
+                return res.send({ message: 'User Location Added' });
+            });
+        })
+    }
+}
+
 module.exports = {
-    saveUserLocation
+    saveBackgroundUserLocation
 }

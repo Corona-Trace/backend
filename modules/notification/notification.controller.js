@@ -7,6 +7,7 @@ function fetchNotification(req, res){
     perPage = parseInt(perPage);
 
     Notification.find({ userId })
+        .sort({ timestamp: -1 })
         .skip((page - 1) * perPage)
         .limit(perPage)
         .lean()

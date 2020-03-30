@@ -1,6 +1,6 @@
-const { saveUserLocation } = require('./userLocationHistory.controller');
+const { saveBackgroundUserLocation } = require('./userLocationHistory.controller');
 
 module.exports = (router) => {
-    router.post('/usersLocationHistory', saveUserLocation);
+    router.post('/usersLocationHistory', saveBackgroundUserLocation)
     return router;
 }
