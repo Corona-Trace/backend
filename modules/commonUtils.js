@@ -32,7 +32,7 @@ async function createPayload(infectedUser, userLocationHistoryObj){
     if (timeDiff <= 5)
         visitTime = 'just now';
     else if(timeDiff < 60)
-        visitTime = `${timeDiff} minutes`;
+        visitTime = `${parseInt(timeDiff)} minutes`;
     else if (timeDiff < 1440)// minutes in a day
         visitTime = `${parseInt(timeDiff/60)} ${parseInt(timeDiff/60) == 1 ? 'hour': 'hours'}`;
     else
