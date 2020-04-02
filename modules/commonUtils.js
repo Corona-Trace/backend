@@ -47,7 +47,6 @@ async function createPayload(infectedUser, userLocationHistoryObj){
             }
             const payload = {
                 notification: {
-                    click_action: "FLUTTER_NOTIFICATION_CLICK",
                     title: `Alert: You crossed paths with someone confirmed Positive.`,
                     body: `An Anonymous person tested positive for Coronavirus visited ${address} at ${time} on ${infectedTs.getMonth() + 1}/${infectedTs.getDate()}, ${visitTime} prior to when you were there.`,
                     badge: '1',

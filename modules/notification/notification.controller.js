@@ -20,7 +20,13 @@ function fetchNotification(req, res){
 }
 
 function saveNotification(notificationObj){
-    const notification = new Notification(notificationObj);
+    const notification = new Notification({
+        ...notificationObj,
+        location: {
+            type: 'Point',
+            coordinates: [notificationObj.lng, notificationObj.lat]
+        }
+    });
     return notification.save();
 }
 

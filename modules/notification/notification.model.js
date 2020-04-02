@@ -6,8 +6,20 @@ const notificationSchema = new Schema({
     address: String,
     lat: Number,
     lng: Number,
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     timestamp: { type: Date, required: true },
 }, { timestamps: {} });
 
+notificationSchema.index({ location: '2dsphere' });
 const Notification = mongoose.model('notification', notificationSchema);
 module.exports = Notification;

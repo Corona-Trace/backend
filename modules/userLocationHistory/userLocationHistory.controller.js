@@ -1,4 +1,5 @@
 const User = require('../user/user.model');
+const Notification = require('../notification/notification.model');
 const UserLocationHistory = require('./userLocationHistory.model');
 
 const { sendPush, createPayload } = require('../commonUtils');
@@ -64,7 +65,7 @@ function checkUserLocation(userLocationHistoryObj, userObj) {
     })
     .sort({ timestamp: -1 })
     .limit(1)
-    .exec(async function (err, infectedUsers) {
+    .exec(function (err, infectedUsers) {
         if(err){
             console.error(`functionName:checkUserLocation,lat:${lat},lng:${lng}, err:${err}`);
             return null;
@@ -72,17 +73,32 @@ function checkUserLocation(userLocationHistoryObj, userObj) {
         console.log("ULH1:",infectedUsers);
         if(infectedUsers.length > 0){
             const infectedUser = infectedUsers[0];
-            try{
-                const payload = await createPayload(infectedUser, userLocationHistoryObj);
-                const pushObj = {
-                    payload,
-                    token: userObj.token
+            Notification.find({
+                $and: [
+                    { userId: userLocationHistoryObj.userId },
+                    { timestamp: { $gte: new Date(userLocationHistoryObj.timestamp - 60 * 60 * 1000) } },
+                    { location: { $near: { $geometry: { type: "Point", coordinates: [lng, lat] }, $maxDistance: 100 } } }
+                ]
+            }).exec(async function (error, notifications) {
+                if (error) {
+                    console.error(`functionName:checkUserLocation,lat:${lat},lng:${lng}, err:${error}`);
+                    return null;
                 }
-                if(pushObj.token)
-                    sendPush(pushObj);
-            } catch (err) {
-                console.log(`Error in fetching payload: ${err}`);
-            }
+                if (notifications.length > 0) {
+                    return null;
+                }
+                try {
+                    const payload = await createPayload(infectedUser, userLocationHistoryObj);
+                    const pushObj = {
+                        payload,
+                        token: userObj.token
+                    }
+                    if (pushObj.token)
+                        sendPush(pushObj);
+                } catch (err) {
+                    console.log(`Error in fetching payload: ${err}`);
+                }
+            })
         }      
     });
 }
