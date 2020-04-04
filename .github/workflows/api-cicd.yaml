@@ -53,6 +53,9 @@ jobs:
       - name: Tag Docker Image
         run: docker tag $DOCKER_LOCAL_IMAGE_TAG us.gcr.io/$PROJECT_ID/api:latest
 
+      - name: Authenticate Docker with GCR
+        run: gcloud auth configure-docker
+
       - name: Push Docker Image to GCR
         run: docker push us.gcr.io/$PROJECT_ID/api:latest
 
