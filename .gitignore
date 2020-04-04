@@ -105,3 +105,5 @@ dist
 
 keyfile.json
 **/keyfile.json
+
+.DS_STORE

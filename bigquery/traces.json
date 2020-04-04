@@ -1,0 +1,26 @@
+{
+    "sourceFormat": "BIGTABLE",
+    "sourceUris": [
+        "https://googleapis.com/bigtable/projects/encoded-copilot-272701/instances/bt-coronatrace-main-prod/tables/traces"
+    ],
+    "bigtableOptions": {
+        "readRowKeyAsString": false,
+        "columnFamilies" : [
+            {
+                "familyId": "location",
+                "columns": [
+                  {
+                    "qualifierString": "lat",
+                    "type": "FLOAT",
+                    "encoding": "TEXT"
+                  },
+                  {
+                    "qualifierString": "lon",
+                    "type": "FLOAT",
+                    "encoding": "TEXT"
+                  }
+                ]
+            }
+        ]
+    }
+}
