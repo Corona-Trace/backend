@@ -17,7 +17,7 @@ async function main(): Promise<void> {
   const Traces = bg.table("traces");
 
   const app = express();
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: "10mb" }));
 
   app.post("/usersLocationHistory", (req, res) => {
     const body: TraceRequestBody = req.body;
