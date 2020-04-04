@@ -1,0 +1,37 @@
+ 
+name: API - Deploy to Production
+
+on:
+  repository_dispatch:
+    types:
+      - api-deploy-prod
+  push:
+    branches:
+      - master
+    paths:
+      - "services/api/**"
+
+env:
+  PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup gcloud
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: "278.0.0"
+          service_account_email: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_EMAIL }}
+          service_account_key: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Configure gcloud CLI
+        run: gcloud config set project $PROJECT_ID
+
+      - name: Build, push and deploy
+        run: cd services/api && gcloud builds submit

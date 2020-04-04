@@ -1,0 +1,8 @@
+# We don't need to upload anything, because we are simply using cloud build for the deployment process
+src
+node_modules
+dist
+*.json
+*.lock
+*.js
+Dockerfile
