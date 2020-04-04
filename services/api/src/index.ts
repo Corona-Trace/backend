@@ -22,6 +22,7 @@ async function main(): Promise<void> {
   app.post("/usersLocationHistory", (req, res) => {
     const body: TraceRequestBody = req.body;
 
+    // TODO: inserts are capped at 4MB, ensure we don't go over this limit
     Traces.insert(
       body.map((trace) => {
         return {
