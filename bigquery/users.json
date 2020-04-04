@@ -1,0 +1,30 @@
+{
+    "sourceFormat": "BIGTABLE",
+    "sourceUris": [
+        "https://googleapis.com/bigtable/projects/encoded-copilot-272701/instances/bt-coronatrace-main-prod/tables/users"
+    ],
+    "bigtableOptions": {
+        "readRowKeyAsString": false,
+        "columnFamilies" : [
+            {
+                "familyId": "status",
+                "columns": [
+                  {
+                    "qualifierString": "confirmed",
+                    "type": "BOOLEAN",
+                    "encoding": "TEXT"
+                  },
+                  {
+                    "qualifierString": "informed_time",
+                    "type": "STRING",
+                    "encoding": "TEXT"
+                  }
+                ]
+            },
+            {
+                "familyId": "interest_areas",
+                "type": "STRING"
+            }
+        ]
+    }
+}
