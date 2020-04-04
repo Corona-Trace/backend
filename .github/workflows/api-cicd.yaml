@@ -7,7 +7,6 @@ on:
       - api-deploy-prod
   push:
     branches:
-      - '!master'
       - 'develop'
     paths:
       - "services/api/**"

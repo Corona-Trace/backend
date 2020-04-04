@@ -5,15 +5,11 @@ on:
   repository_dispatch:
     types:
       - api-deploy-prod
-  push:
-    branches:
-      - '!master'
-      - '!develop'
-    paths:
-      - "services/api/**"
   pull_request:
     branches:
       - develop
+    paths:
+      - "services/api/**"
 
 env:
   WORKING_DIRECTORY: services/api
