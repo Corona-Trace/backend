@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   app.use(bodyParser.json());
 
   app.post("/usersLocationHistory", (req, res) => {
-    let body: TraceRequestBody = req.body;
+    const body: TraceRequestBody = req.body;
 
     Traces.insert(
       body.map((trace) => {

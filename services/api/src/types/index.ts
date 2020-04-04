@@ -20,5 +20,5 @@ export type Trace = {
       | "unknown";
     confidence: number;
   };
-  uuid: String;
+  uuid: string;
 };
