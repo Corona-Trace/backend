@@ -42,7 +42,6 @@ async function main(): Promise<void> {
           res.end("Internal server error");
           return;
         }
-        console.log("reps", _resp);
 
         res.status(200);
         res.end("OK");
