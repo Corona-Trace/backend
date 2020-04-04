@@ -10,6 +10,7 @@ on:
       - develop
     paths:
       - "services/api/**"
+      - ".github/workflows/api-ci.yaml"
 
 env:
   WORKING_DIRECTORY: services/api

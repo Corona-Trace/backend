@@ -10,6 +10,7 @@ on:
       - 'develop'
     paths:
       - "services/api/**"
+      - ".github/workflows/api-cicd.yaml"
 
 env:
   PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
