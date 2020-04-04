@@ -1,0 +1,42 @@
+const fs = require("fs").promises;
+const { promisify } = require("util");
+const parseString = promisify(require("xml2js").parseString);
+const fetch = require("node-fetch");
+
+const filePath = process.argv[2];
+
+if (!filePath) {
+  console.error(".gpx file path not provided");
+  process.exit(1);
+}
+
+const uuid = "3CC75729-19FA-4F6C-99D1-22DF01AED2F9";
+
+async function run() {
+  const content = await fs.readFile(filePath, "utf8");
+  const parsed = await parseString(content);
+  const points = parsed.gpx.trk[0].trkseg[0].trkpt.map((point) => {
+    return {
+      uuid,
+      lat: point.$.lat,
+      lng: point.$.lon,
+      timestamp: point.time[0],
+    };
+  });
+
+  console.log(points);
+
+  console.log("SUBMITTING TO API");
+  fetch("http://localhost:8080/usersLocationHistory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(points),
+  });
+}
+
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
