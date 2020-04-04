@@ -18,8 +18,8 @@ env:
   DOCKER_LOCAL_IMAGE_TAG: corona-trace/api:latest
 
 jobs:
-  integration:
-    name: Integration
+  cicd:
+    name: Continuous Integration and Deployment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
@@ -34,12 +34,6 @@ jobs:
         run: cd $WORKING_DIRECTORY && yarn package
       - name: Build Docker Image
         run: cd $WORKING_DIRECTORY && docker build -t $DOCKER_LOCAL_IMAGE_TAG .
-  
-  deployment:
-    name: Deployment
-    runs-on: ubuntu-latest
-    needs: integration
-    steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 

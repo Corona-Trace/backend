@@ -17,8 +17,8 @@ env:
   DOCKER_LOCAL_IMAGE_TAG: corona-trace/api:latest
 
 jobs:
-  integration:
-    name: Integration
+  ci:
+    name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
