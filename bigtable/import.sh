@@ -4,8 +4,9 @@ instance=${1:-localhost:8086}
 
 # create users table
 cbt -instance $instance createtable users
-cbt -instance $instance createfamily users status 
-cbt -instance $instance createfamily users interest_areas
+cbt -instance $instance createfamily users status  #confirmed,informed_time
+cbt -instance $instance createfamily users push_notification_token #push_notification_token
+cbt -instance $instance createfamily users interest_areas #interest_areas is a list
 
 # insert test data
 user1=$(uuidgen)
@@ -13,7 +14,8 @@ cbt -instance $instance set users $user1 status:confirmed=false status:informed_
 
 # create traces table
 cbt -instance $instance createtable traces
-cbt -instance $instance createfamily traces location
+cbt -instance $instance createfamily traces location #lat,lon,accuracy,speed,heading,altitude
+cbt -instance $instance createfamily traces activity #type=still|on_foot|walking...,confidence
 
 time=$(node -e 'console.log(new Date().toISOString())')
-cbt -instance $instance set traces "$time#$user1" location:lon=52.3842352 location:lat=4.9139242
+cbt -instance $instance set traces "$time#$user1" location:lat=52.3842352 location:lon=4.9139242
