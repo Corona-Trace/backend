@@ -9,6 +9,7 @@ import { mkUsers } from "./controllers/users";
 
 const BIGTABLE_INSTANCE = process.env.BIGTABLE_INSTANCE || "localhost:8086";
 const PROJECT_ID = process.env.PROJECT_ID;
+const MATCHING_TOKEN = process.env.MATCHING_TOKEN; // used to verify the origin of the request that triggers heavy bq queries
 
 const bigtable = new Bigtable({ projectId: PROJECT_ID });
 const bigquery = new BigQuery({ projectId: PROJECT_ID });
@@ -61,7 +62,13 @@ async function main(): Promise<void> {
     .use(bodyParser.text({ limit: "1kb", type: "*/*" }))
     .post("/matches", (req, res) => {
       const token = req.body;
-      log.info("Finding new potentially infected users with token", token);
+      log.info("Finding new potentially infected users");
+      if (MATCHING_TOKEN && token !== MATCHING_TOKEN) {
+        log.error("Mismatching token", token);
+        res.status(403);
+        res.end("OK");
+        return;
+      }
 
       const query = `
       SELECT * FROM coronatrace_prod.line_traces_sessioned_by_user LIMIT 1000
