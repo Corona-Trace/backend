@@ -10,7 +10,10 @@ cbt -instance $instance createfamily users interest_areas #interest_areas is a l
 
 # insert test data
 user1=$(uuidgen)
-cbt -instance $instance set users $user1 status:confirmed=false status:informed_time="$(node -e 'console.log(new Date().toISOString())')" interest_areas:0="852f5b6bfffffff" interest_areas:1="852e74b7fffffff"
+cbt -instance $instance set users $user1 status:confirmed=false status:informed_time="$(node -e 'console.log(new Date().toISOString())')" interest_areas:0="852f5b6bfffffff" interest_areas:1="852e74b7fffffff" push_notification_token:token="token_$user1"
+
+user2=$(uuidgen)
+cbt -instance $instance set users $user2 status:confirmed=true status:informed_time="$(node -e 'console.log(new Date().toISOString())')" interest_areas:0="852f5b6bfffffff" interest_areas:1="852e74b7fffffff" push_notification_token:token="token_$user2"
 
 # create traces table
 cbt -instance $instance createtable traces
