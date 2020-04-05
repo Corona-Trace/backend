@@ -54,6 +54,11 @@ async function main(): Promise<void> {
 
   app.post("/users", mkUsers({ Users, log }));
   app.patch("/users", mkUsers({ Users, log }));
+  app.post("/matches", (req, res) => {
+    log.info("Finding new potentially infected users");
+    res.status(200);
+    res.end("OK");
+  });
 
   app.get("/hello", (req, res) => {
     log.info("hello world!");
