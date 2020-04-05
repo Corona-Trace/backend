@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import bunyan from "bunyan";
 import { Bigtable } from "@google-cloud/bigtable";
 import { BigQuery } from "@google-cloud/bigquery";
+import * as admin from "firebase-admin";
 
 import { TraceRequestBody } from "./types";
 import { mkUsers } from "./controllers/users";
@@ -15,6 +16,11 @@ const bigtable = new Bigtable({ projectId: PROJECT_ID });
 const bigquery = new BigQuery({ projectId: PROJECT_ID });
 
 const log = bunyan.createLogger({ name: "api" });
+
+// TODO
+// admin.initializeApp({
+//   projectId: PROJECT_ID,
+// });
 
 async function main(): Promise<void> {
   const bg = bigtable.instance(BIGTABLE_INSTANCE);
@@ -71,7 +77,7 @@ async function main(): Promise<void> {
       }
 
       const query = `
-      SELECT * FROM coronatrace_prod.line_traces_sessioned_by_user LIMIT 1000
+      SELECT * FROM coronatrace_prod.infected_trails_last_30m_v1;
     `;
 
       const bqOpts = {
@@ -88,8 +94,9 @@ async function main(): Promise<void> {
           return job.getQueryResults();
         })
         .then(([rows]) => {
-          // TODO: proper handling
           rows.forEach((row) => {
+            // TODO: send push notification for user
+            // TODO: we can also log the ts, segment, infecting_user and infecting_segment for later improvements somewhere else?
             console.log("row", row);
           });
         })
