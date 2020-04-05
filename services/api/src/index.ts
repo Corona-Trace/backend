@@ -4,6 +4,8 @@ import bunyan from "bunyan";
 import { Bigtable } from "@google-cloud/bigtable";
 import { TraceRequestBody } from "./types";
 
+import { mkUsers } from "./controllers/users";
+
 const BIGTABLE_INSTANCE = process.env.BIGTABLE_INSTANCE || "localhost:8086";
 const PROJECT_ID = process.env.PROJECT_ID;
 
@@ -13,8 +15,8 @@ const log = bunyan.createLogger({ name: "api" });
 
 async function main(): Promise<void> {
   const bg = bigtable.instance(BIGTABLE_INSTANCE);
-  // const Users = bg.table("users");
   const Traces = bg.table("traces");
+  const Users = bg.table("users");
 
   const app = express();
   app.use(bodyParser.json({ limit: "10mb" }));
@@ -49,6 +51,9 @@ async function main(): Promise<void> {
       }
     );
   });
+
+  app.post("/users", mkUsers({ Users, log }));
+  app.patch("/users", mkUsers({ Users, log }));
 
   app.get("/hello", (req, res) => {
     log.info("hello world!");
