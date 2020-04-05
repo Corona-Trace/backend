@@ -3,6 +3,9 @@ const { promisify } = require("util");
 const parseString = promisify(require("xml2js").parseString);
 const fetch = require("node-fetch");
 
+// const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://api-yp2tme3siq-uc.a.run.app";
+
 const filePath = process.argv[2];
 
 if (!filePath) {
@@ -27,7 +30,7 @@ async function run() {
   console.log(points);
 
   console.log("SUBMITTING TO API");
-  fetch("http://localhost:8080/usersLocationHistory", {
+  fetch(BASE_URL + "/usersLocationHistory", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
