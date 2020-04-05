@@ -55,7 +55,8 @@ async function main(): Promise<void> {
   app.post("/users", mkUsers({ Users, log }));
   app.patch("/users", mkUsers({ Users, log }));
   app.post("/matches", (req, res) => {
-    log.info("Finding new potentially infected users");
+    const { token } = req.body;
+    log.info("Finding new potentially infected users with token", token);
     res.status(200);
     res.end("OK");
   });
