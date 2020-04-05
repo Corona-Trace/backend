@@ -2,14 +2,16 @@ import express from "express";
 import bodyParser from "body-parser";
 import bunyan from "bunyan";
 import { Bigtable } from "@google-cloud/bigtable";
-import { TraceRequestBody } from "./types";
+import { BigQuery } from "@google-cloud/bigquery";
 
+import { TraceRequestBody } from "./types";
 import { mkUsers } from "./controllers/users";
 
 const BIGTABLE_INSTANCE = process.env.BIGTABLE_INSTANCE || "localhost:8086";
 const PROJECT_ID = process.env.PROJECT_ID;
 
 const bigtable = new Bigtable({ projectId: PROJECT_ID });
+const bigquery = new BigQuery({ projectId: PROJECT_ID });
 
 const log = bunyan.createLogger({ name: "api" });
 
@@ -55,12 +57,41 @@ async function main(): Promise<void> {
 
   app.post("/users", mkUsers({ Users, log }));
   app.patch("/users", mkUsers({ Users, log }));
-  app.post("/matches", (req, res) => {
-    const { token } = req.body;
-    log.info("Finding new potentially infected users with token", token);
-    res.status(200);
-    res.end("OK");
-  });
+  app
+    .use(bodyParser.text({ limit: "1kb", type: "*/*" }))
+    .post("/matches", (req, res) => {
+      const token = req.body;
+      log.info("Finding new potentially infected users with token", token);
+
+      const query = `
+      SELECT * FROM coronatrace_prod.line_traces_sessioned_by_user LIMIT 1000
+    `;
+
+      const bqOpts = {
+        query,
+        location: "US",
+      };
+
+      res.status(200);
+      res.end("OK");
+
+      bigquery
+        .createQueryJob(bqOpts)
+        .then(([job]) => {
+          return job.getQueryResults();
+        })
+        .then(([rows]) => {
+          // TODO: proper handling
+          rows.forEach((row) => {
+            console.log("row", row);
+          });
+        })
+        .catch((e) => {
+          log.error(e);
+          // res.status(500);
+          // res.end("Internal Server Error");
+        });
+    });
 
   app.get("/hello", (req, res) => {
     log.info("hello world!");
