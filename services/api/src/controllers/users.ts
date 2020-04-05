@@ -31,18 +31,26 @@ export function mkUsers({
       };
     }
 
-    const row = Users.row(userId);
-    // TODO: this does not overwrite values -- it appends
-    row.save(updateBody, null, (err: Error | undefined) => {
-      if (err) {
-        log.error(err);
-        res.status(500);
-        res.end();
-        return;
-      }
+    Users.insert(
+      [
+        {
+          key: userId,
+          data: updateBody,
+        },
+      ],
+      null,
+      (err: Error | undefined, payload: any) => {
+        if (err) {
+          log.error(err);
+          res.status(500);
+          res.end();
+          return;
+        }
 
-      res.status(200);
-      res.end("OK");
-    });
+        console.log(payload);
+        res.status(200);
+        res.end("OK");
+      }
+    );
   };
 }

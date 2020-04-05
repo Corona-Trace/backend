@@ -15,6 +15,7 @@ const log = bunyan.createLogger({ name: "api" });
 
 async function main(): Promise<void> {
   const bg = bigtable.instance(BIGTABLE_INSTANCE);
+
   const Traces = bg.table("traces");
   const Users = bg.table("users");
 

@@ -8,6 +8,7 @@
         "columnFamilies" : [
             {
                 "familyId": "status",
+                "onlyReadLatest": true,
                 "columns": [
                   {
                     "qualifierString": "confirmed",
@@ -23,6 +24,7 @@
             },
             {
                 "familyId": "interest_areas",
+                "onlyReadLatest": true,
                 "type": "STRING"
             }
         ]
