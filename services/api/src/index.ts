@@ -5,7 +5,7 @@ import { Bigtable } from "@google-cloud/bigtable";
 import { BigQuery } from "@google-cloud/bigquery";
 import * as admin from "firebase-admin";
 
-import { TraceRequestBody } from "./types";
+import { TraceRequestBody, MatchRow } from "./types";
 import { mkUsers } from "./controllers/users";
 
 const BIGTABLE_INSTANCE = process.env.BIGTABLE_INSTANCE || "localhost:8086";
@@ -94,7 +94,14 @@ async function main(): Promise<void> {
           return job.getQueryResults();
         })
         .then(([rows]) => {
-          rows.forEach((row) => {
+          rows.forEach((row: MatchRow) => {
+            // structure:
+            // row.ts (string ISO format)
+            // row.user_id (string)
+            // row.push_notification_token (string)
+            // row.segment (geo type: { value: 'Polygon(...)' })
+            // row.infecting_user (a user_id)
+            // row.infecting_segment (geo type: { value: 'Polygon(...)' })
             // TODO: send push notification for user
             // TODO: we can also log the ts, segment, infecting_user and infecting_segment for later improvements somewhere else?
             console.log("row", row);
