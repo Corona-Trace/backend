@@ -74,11 +74,11 @@ lastMatcherRun.then(([row]: any) => row.data.payload)
     // Mark checkpoint
     runAt = new Date().toISOString();
     log.info(`Pushing ${rows.length} infections into push notification queue`)
-    Promise.all(rows.map((row: MatchRow) => {
+    return Promise.all(rows.map((row: MatchRow) => {
         return notificationTopic.publish(Buffer.from(JSON.stringify(row)))
-    }, {concurrency: 10}))
-}).then((_: any) => {
-    log.info("All notifications sent!");
+    }, {concurrency: 100}))
+}).then((notifications: any) => {
+    log.info(`${notifications.length} notifications sent!`);
     log.info("Saving checkpoint...");
     return checkpointsTable.row('last_matcher_run').save({
         payload: {run_ts: runAt}
