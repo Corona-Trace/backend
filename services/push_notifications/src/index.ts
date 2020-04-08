@@ -8,7 +8,7 @@ import config from "../config";
 const projectId = config.projectId;
 const subscriptionName = config.pushNotificationTopic;
 
-const log = bunyan.createLogger({ name: "matcher" });
+const log = bunyan.createLogger({ name: "push_notification_consumer" });
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
