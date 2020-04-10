@@ -1,27 +1,34 @@
-export type TraceRequestBody = Trace[];
 export type UserRequestBody = User;
 
-export type Trace = {
-  userId: string;
-  timestamp: string; // ISO format?;
-  lat: number;
-  lng: number;
-  accuracy?: number;
-  speed?: number;
-  heading?: number;
-  altitude?: number;
-  activity?: {
-    type:
-      | "still"
-      | "on_foot"
-      | "walking"
-      | "running"
-      | "in_vehicle"
-      | "on_bicycle"
-      | "unknown";
-    confidence: number;
+export type TraceRequestBody = {
+  location: {
+    timestamp: string;
+    uuid: string;
+    geofence?: string;
+    activity?: {
+      type:
+        | "still"
+        | "on_foot"
+        | "walking"
+        | "running"
+        | "in_vehicle"
+        | "on_bicycle"
+        | "unknown";
+      confidence: number;
+    };
+    is_moving?: boolean;
+    extras: {
+      userId: string;
+      offset?: number;
+    };
+    coords: {
+      latitude: number;
+      longitude: number;
+      speed?: number;
+      heading?: number;
+      altitude?: number;
+    };
   };
-  uuid: string;
 };
 
 export type User = {

@@ -34,19 +34,32 @@ async function main(): Promise<void> {
   app.post("/usersLocationHistory", (req, res) => {
     const body: TraceRequestBody = req.body;
 
-    // TODO: inserts are capped at 4MB, ensure we don't go over this limit
+    if (!body.location) {
+      res.status(404);
+      res.end("Bad request");
+      return;
+    }
+
+    const trace = body.location;
+
+    const tz = new Date(
+      new Date(trace.timestamp).getTime() +
+        ((trace.extras && trace.extras.offset) || 0)
+    );
+
     Traces.insert(
-      body.map((trace) => {
-        return {
-          key: `${trace.timestamp}#${trace.uuid}`,
-          data: {
-            location: {
-              lat: trace.lat,
-              lon: trace.lng,
-            },
+      {
+        key: `${tz}#${trace.extras.userId}`,
+        data: {
+          location: {
+            lat: String(trace.coords.latitude),
+            lon: String(trace.coords.longitude),
+            speed: trace.coords.speed && String(trace.coords.speed),
+            heading: trace.coords.heading && String(trace.coords.heading),
+            altitude: trace.coords.altitude && String(trace.coords.altitude),
           },
-        };
-      }),
+        },
+      },
       null,
       (err: Error | undefined, _resp: any) => {
         if (err) {
