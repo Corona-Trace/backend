@@ -2,6 +2,10 @@
 
 instance=${1:-localhost:8086}
 
+# create checkpoints table
+cbt -instance $instance createtable checkpoints
+cbt -instance $instance createfamily checkpoints payload  #run_at
+
 # create users table
 cbt -instance $instance createtable users
 cbt -instance $instance createfamily users status  #confirmed,informed_time

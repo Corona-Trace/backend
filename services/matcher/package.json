@@ -1,0 +1,28 @@
+{
+  "name": "matcher",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node dist/src/matcher.js",
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^4.7.0",
+    "@google-cloud/bigtable": "^2.3.2",
+    "@google-cloud/pubsub": "^1.7.0",
+    "@types/bluebird": "^3.5.30",
+    "@types/bunyan": "^1.8.6",
+    "@types/lodash.template": "^4.4.6",
+    "bluebird": "^3.7.2",
+    "bunyan": "^1.8.12",
+    "lodash.template": "^4.5.0"
+  }
+}
