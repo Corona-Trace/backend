@@ -40,16 +40,16 @@ async function main(): Promise<void> {
       return;
     }
 
-    const trace = body.location;
+    const trace = body;
 
     const tz = new Date(
-      new Date(trace.timestamp).getTime() +
+      new Date(trace.location.timestamp).getTime() +
         ((trace.extras && trace.extras.offset) || 0)
     );
 
     Traces.insert(
       {
-        key: `${tz}#${body.extras.userId}`,
+        key: `${tz}#${trace.extras.userId}`,
         data: {
           location: {
             lat: String(trace.coords.latitude),
