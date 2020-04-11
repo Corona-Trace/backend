@@ -40,10 +40,10 @@ async function main(): Promise<void> {
       return;
     }
 
-    const trace = body;
+    const trace = body.location;
 
     const tz = new Date(
-      new Date(trace.location.timestamp).getTime() +
+      new Date(trace.timestamp).getTime() +
         ((trace.extras && trace.extras.offset) || 0)
     );
 
