@@ -1,0 +1,22 @@
+steps:
+  - name: 'node:lts'
+    entrypoint: 'yarn'
+    args:
+      - 'install'
+
+  - name: 'node:lts'
+    entrypoint: 'yarn'
+    args:
+      - 'compile'
+  
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'matcher'
+      - '--source=.'
+      - '--region=us-central1'
+      - '--runtime=nodejs8'
+      - '--memory=2048'
+      - '--trigger-topic=matching-scheduled-jobs'
+      - '--entry-point=matcher'

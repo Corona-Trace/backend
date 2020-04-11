@@ -1,5 +1,6 @@
 {
   "name": "matcher",
+  "main": "dist/src/matcher.js",
   "version": "1.0.0",
   "description": "",
   "scripts": {
