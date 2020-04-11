@@ -49,7 +49,7 @@ async function main(): Promise<void> {
 
     Traces.insert(
       {
-        key: `${tz}#${trace.extras.userId}`,
+        key: `${tz}#${body.extras.userId}`,
         data: {
           location: {
             lat: String(trace.coords.latitude),
