@@ -4,11 +4,15 @@ import { PubSub } from "@google-cloud/pubsub";
 import template from "lodash.template";
 import fs from "fs";
 import config from "../config";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Bigtable = require("@google-cloud/bigtable");
 const BIGTABLE_INSTANCE =
   process.env.BIGTABLE_INSTANCE || config.bigtableInstance || "localhost:8086";
 const PROJECT_ID = process.env.PROJECT_ID || config.projectId;
 
+// only console.log gets logged nicely
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = bunyan.createLogger({ name: "matcher" });
 console.log("Loading SQL-query");
 const queryRaw = fs.readFileSync("sql/query.sql", "utf8");
@@ -66,7 +70,8 @@ export async function matcher(): Promise<void> {
   console.log("checkpoints table result", row);
 
   const lastRunAt = row
-    ? new Date(row.data.payload.run_ts[0].value)
+    ? // eslint-disable-next-line @typescript-eslint/camelcase
+      new Date(row.data.payload.run_ts[0].value)
     : new Date(0);
 
   console.log(`Last run at ${lastRunAt}`);
@@ -90,6 +95,7 @@ export async function matcher(): Promise<void> {
   console.log(`${notifications.length} notifications sent!`);
   console.log("Saving checkpoint...");
   await checkpointsTable.row("last_matcher_run").save({
+    // eslint-disable-next-line @typescript-eslint/camelcase
     payload: { run_ts: runAt },
   });
   console.log("Done!");

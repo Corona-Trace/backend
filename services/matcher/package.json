@@ -5,9 +5,12 @@
   "description": "",
   "scripts": {
     "start": "node dist/src/matcher.js",
+    "clean": "rimraf dist",
     "compile": "tsc",
     "watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src --ext .ts",
+    "package": "yarn lint && yarn clean && yarn compile"
   },
   "author": "",
   "license": "MIT",
@@ -22,8 +25,12 @@
     "@types/bluebird": "^3.5.30",
     "@types/bunyan": "^1.8.6",
     "@types/lodash.template": "^4.4.6",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "eslint": "^6.8.0",
     "bluebird": "^3.7.2",
     "bunyan": "^1.8.12",
+    "rimraf": "^3.0.2",
     "lodash.template": "^4.5.0"
   }
 }
