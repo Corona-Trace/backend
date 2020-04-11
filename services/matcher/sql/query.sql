@@ -35,6 +35,6 @@ SELECT
 FROM healthy_trails, sick_trails 
 WHERE ST_DISTANCE(healthy_trails.segment, sick_trails.segment) <= ${ maxInfectDistance }
   AND healthy_trails.ts >= sick_trails.ts
-  AND healthy_trails.ts >= DATETIME(TIMESTAMP "${ runSince }"))
+  AND healthy_trails.ts >= DATETIME(TIMESTAMP "${ runSince }")
   AND healthy_trails.ts <= DATETIME_ADD(sick_trails.ts, INTERVAL ${ maxInfectTime } MINUTE)
 GROUP BY 1, 2
