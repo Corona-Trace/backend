@@ -33,10 +33,10 @@ export type MatchRow = {
   infecting_segment: GeoEntry;
 };
 
-function generateQuery(timeSince: Date): string {
+function generateQuery(runSince: Date): string {
   return queryCompiled(
     Object.assign(config, {
-      sickSince: timeSince.toISOString(),
+      runSince: runSince.toISOString(),
     })
   );
 }
