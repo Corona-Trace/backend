@@ -2,7 +2,7 @@
   "name": "load_test",
   "version": "1.0.0",
   "description": "",
-  "main": "runner.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

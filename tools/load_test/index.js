@@ -82,7 +82,7 @@ function runScenario(scenario) {
   });
 }
 
-function loadAndRun(s) {
+module.exports.loadAndRun = (s) => {
   return prepareScenarios(s.interval, s.path).then((scenarios) => {
     const limiter = new Bottleneck({
       maxConcurrent: s.users,
@@ -91,7 +91,7 @@ function loadAndRun(s) {
     const results = scenarios.map((scenario) => runScenarioLimited(scenario));
     return Promise.all(results);
   });
-}
+};
 
 const scenario = {
   users: 100,
