@@ -1,0 +1,17 @@
+steps:
+  - name: 'node:lts'
+    entrypoint: 'yarn'
+    args:
+      - 'install'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'load_test'
+      - '--source=.'
+      - '--region=us-central1'
+      - '--runtime=nodejs10'
+      - '--memory=512'
+      - '--trigger-topic=loadtest-scenarios'
+      - '--entry-point=loadAndRun'
