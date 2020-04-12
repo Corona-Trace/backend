@@ -5,12 +5,12 @@ const { PubSub } = require("@google-cloud/pubsub");
 
 
 const config = {
-    CLOUD_FUNCTION_MAX_RUNTIME: 1000*60*0.99, // 8 minutes
+    CLOUD_FUNCTION_MAX_RUNTIME: 1000*60*8*0.99, // 8 minutes
     TEST_RUNTIME: 1000*60*20, // 20 minutes
-    RAMP_UP_TIME: 1000*60*15, // 15 minutes to get to highest point
-    MAX_CONCURRENT_USERS: 10000, // 10k concurrent users
-    START_USERS: 100,
-    JOB_CONCURRENCY: 50, // How many users per process
+    RAMP_UP_TIME: 1000*60*10, // 10 minutes to get to highest point
+    MAX_CONCURRENT_USERS: 100000, // 10k concurrent users
+    START_USERS: 10000,
+    JOB_CONCURRENCY: 100, // How many users per process
     INTERVAL: 1000*10 // Interval between location requests
 }
 
