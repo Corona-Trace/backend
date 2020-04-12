@@ -12,6 +12,7 @@ steps:
       - '--source=.'
       - '--region=us-central1'
       - '--runtime=nodejs10'
-      - '--memory=512'
+      - '--memory=128'
       - '--trigger-topic=loadtest-scenarios'
       - '--entry-point=loadAndRun'
+      - '--timeout=540s'
