@@ -45,7 +45,7 @@ async function main(): Promise<void> {
     const tz = new Date(
       new Date(trace.timestamp).getTime() +
         ((trace.extras && trace.extras.offset) || 0)
-    );
+    ).toISOString();
 
     Traces.insert(
       {
