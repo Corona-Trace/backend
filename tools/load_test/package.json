@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/pubsub": "^1.7.2",
     "@google-cloud/storage": "^4.7.0",
     "axios": "^0.19.2",
     "bottleneck": "^2.19.5",
