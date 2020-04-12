@@ -82,7 +82,9 @@ function runScenario(scenario) {
   });
 }
 
-module.exports.loadAndRun = (s) => {
+const loadAndRun = (ev) => {
+  const s = JSON.parse(Buffer.from(ev.data, "base64").toString());
+  console.log("SCENARIO", s);
   return prepareScenarios(s.interval, s.path).then((scenarios) => {
     const limiter = new Bottleneck({
       maxConcurrent: s.users,
@@ -101,7 +103,7 @@ const scenario = {
 };
 
 if (require.main === module) {
-  loadAndRun(scenario)
+  loadAndRun({ data: Buffer.from(JSON.stringify(scenario)).toString("base64") })
     .then((_r) => {
       console.log("ready!");
     })
@@ -110,3 +112,5 @@ if (require.main === module) {
       process.exit(1);
     });
 }
+
+module.exports.loadAndRun = loadAndRun;
