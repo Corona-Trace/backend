@@ -32,9 +32,6 @@ jobs:
       - name: Install Dependencies
         run: cd $WORKING_DIRECTORY && yarn --frozen-lockfile
       
-      - name: Lint, Test, Compile
-        run: cd $WORKING_DIRECTORY && yarn package
-
       - name: Setup gcloud
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
