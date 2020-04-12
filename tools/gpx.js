@@ -37,7 +37,10 @@ async function run() {
   console.log(points);
 
   console.log("SUBMITTING TO API");
+  let i = 0;
   for (const p of points) {
+    i++;
+    console.log(i, "/", points.length);
     await fetch(BASE_URL + "/usersLocationHistory", {
       method: "POST",
       headers: {
