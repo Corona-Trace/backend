@@ -1,0 +1,25 @@
+{
+  "name": "push_notifications",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node dist/src/index.js",
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@google-cloud/pubsub": "^1.7.0",
+    "@types/bluebird": "^3.5.30",
+    "@types/bunyan": "^1.8.6",
+    "@types/lodash.template": "^4.4.6",
+    "bunyan": "^1.8.12",
+    "lodash.template": "^4.5.0"
+  }
+}
