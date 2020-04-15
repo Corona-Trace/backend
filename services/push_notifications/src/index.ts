@@ -5,15 +5,19 @@ import bunyan from "bunyan";
 import { v1 } from "@google-cloud/pubsub";
 import config from "../config";
 
-const projectId = 'corona' || config.projectId;
+const projectId = config.projectId;
 const subscriptionName = config.pushNotificationTopic;
 
 const log = bunyan.createLogger({ name: "push_notification_consumer" });
 
-admin.initializeApp();
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
 
 // Creates a client; cache this for further use.
-const subClient = new v1.SubscriberClient();
+const subClient = new v1.SubscriberClient({
+  projectId: projectId
+});
 
 async function synchronousPull() {
   const formattedSubscription = subClient.subscriptionPath(
@@ -28,7 +32,7 @@ async function synchronousPull() {
     maxMessages: 500,
   };
 
-  log.info('Pull');
+  log.info(`Pull ${formattedSubscription}`);
 
   // The subscriber pulls a specified number of messages.
   let response: any;
@@ -37,10 +41,6 @@ async function synchronousPull() {
   } catch (e) {
     log.error(e);
   }
-
-  log.info('Pulled');
-
-  console.log(response.receivedMessages);
 
   if (response.receivedMessages) {
     // Process the messages.
